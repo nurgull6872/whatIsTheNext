@@ -67,7 +67,8 @@ def _flatten_detail(detail):
         parts = []
         for field, messages in detail.items():
             text = _flatten_detail(messages)
-            parts.append(text if field == "non_field_errors" else f"{field}: {text}")
+            # DRF'in genel sarmalayici alanlari; gercek bir form alani degiller.
+            parts.append(text if field in ("detail", "non_field_errors") else f"{field}: {text}")
         return " ".join(parts)
     if isinstance(detail, list):
         return " ".join(_flatten_detail(item) for item in detail)
