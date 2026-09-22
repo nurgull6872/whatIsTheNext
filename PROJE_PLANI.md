@@ -490,28 +490,35 @@ test(accounts): cover registration and authentication flows
 
 **Çıktı:** Backend tamamen bitmiş; httpie/Postman ile uçtan uca senaryo çalışıyor.
 
-- [ ] `PollSerializer` — iç içe seçenekler, **2–5 seçenek doğrulaması**
-- [ ] `PollViewSet` — liste (sayfalama, `new|hot|top` sıralama), detay, oluştur, kapat, sil
-- [ ] `IsAuthenticatedOrReadOnly` + `IsOwnerOrReadOnly` permission sınıfları
-- [ ] `POST /polls/{id}/vote/` — üye ve ziyaretçi yolları
-- [ ] `voter_token` cookie middleware (yoksa üret; `HttpOnly`, `SameSite=None`, `Secure`)
-- [ ] Mükerrer oy → `409 ALREADY_VOTED`; kapalı anket → `403 POLL_CLOSED`
-- [ ] Oy sayımı `annotate(Count)` ile; `select_related` / `prefetch_related` optimizasyonu
-- [ ] Özel exception handler (§5.3 hata formatı)
-- [ ] Testler: 1 ve 6 seçenekli anket reddi, ziyaretçi oyu, çift oy, kapalı ankete oy,
-      başkasının anketini silme denemesi
+- [x] `PollSerializer` — iç içe seçenekler, **2–5 seçenek doğrulaması**, çift seçenek metni reddi
+- [x] `PollViewSet` — liste (sayfalama, `new|hot|top` sıralama, `status` filtresi), detay,
+      oluştur, kapat (PATCH), sil, `/polls/mine/`
+- [x] `IsAuthenticatedOrReadOnly` + `IsOwnerOrReadOnly` permission sınıfları
+- [x] `POST /polls/{id}/vote/` — üye ve ziyaretçi yolları, ayrı throttle (`vote`, 30/dk)
+- [x] `voter_token` middleware — cookie + `X-Voter-Token` başlığı yedeği, `HttpOnly`,
+      prod'da `SameSite=None; Secure`, dev'de `SameSite=Lax`
+- [x] Mükerrer oy → `409 ALREADY_VOTED`; kapalı/süresi dolmuş anket → `403 POLL_CLOSED`
+- [x] Oy sayımı `annotate(Count)` ile; `select_related` + `prefetch_related` (sabit sorgu sayısı)
+- [x] IP adresi düz saklanmıyor, tuzlu SHA-256 ile hash'leniyor (`polls/utils.py`)
+- [x] Testler: 1 ve 6 seçenekli anket reddi, ziyaretçi oyu, çift oy (üye + ziyaretçi),
+      kapalı/süresi dolmuş ankete oy, başkasının anketini kapatma/silme denemesi (27 test)
+- [x] Gerçek Supabase üzerinde uçtan uca duman testi (9 adımlık senaryo, hepsi geçti)
 
-**Commitler:**
+**Gerçekleşen commitler:**
 
 ```
-feat(polls): add poll serializers with 2-5 option validation
-feat(polls): add poll list, detail and create endpoints
-feat(polls): add vote endpoint for members and guests
+fix(backend): stop leaking DRF's "detail" wrapper key in error messages
+feat(polls): add poll and vote serializers with validation
 feat(polls): add voter token middleware for guest vote deduplication
-feat(polls): add owner-only close and delete permissions
-feat(backend): add unified error response handler
+feat(polls): add owner-only permission class
+feat(polls): add poll viewset with sorting, voting and owner-only actions
 test(polls): cover poll creation, voting and duplicate vote rules
 ```
+
+> Duman testi sırasında bulunan hata: `POLL_CLOSED` gibi özel hataların mesajı
+> `"detail: Bu anket artik oy kabul etmiyor."` şeklinde geliyordu (DRF'in sarmalayıcı
+> `detail` anahtarı alan adı sanılıp mesaja eklenmişti). `config/exceptions.py` içinde
+> düzeltildi, testler ve canlı sunucu ile yeniden doğrulandı.
 
 ---
 
