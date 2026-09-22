@@ -1,0 +1,15 @@
+# Depoda LF, calisma kopyasinda platformun yerel satir sonu.
+* text=auto eol=lf
+
+# Ikili dosyalar.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.pdf binary
+
+# Kilit dosyalari diff'te gurultu yapmasin.
+package-lock.json linguist-generated=true -diff

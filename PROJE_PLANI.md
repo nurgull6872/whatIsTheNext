@@ -72,17 +72,18 @@ Bunlar "Gelecek Fikirler" bölümünde.
 | **Django REST Framework (DRF)** | Django'yu API sunucusu yapmanın standart yolu. Serializer + permission sistemi bu projeye birebir uyuyor. |
 | **SimpleJWT** | Stateless JWT auth. React ↔ Django ayrı domainlerde olacağı için session cookie yerine JWT daha temiz. |
 | **Vite + TypeScript** | CRA artık bakımda değil. Vite hızlı, Vercel ile sorunsuz. TS ile API tipleri güvenli. |
-| **Tailwind CSS** | Renkli/oyuncu tasarımı hızlı kurmak için. Tema renkleri `tailwind.config` içinde tek yerden yönetilir. |
+| **Tailwind CSS v4** | Renkli/oyuncu tasarımı hızlı kurmak için. v4 CSS-first: tema tokenları `@theme` bloğunda, `tailwind.config.js` yok. |
 | **TanStack Query** | Anket listesi/detayı cache'leme, oy sonrası otomatik yenileme. Manuel `useEffect` fetch'inden çok daha az hata. |
 | **React Router** | Sayfa yönlendirme. |
 | **React Hook Form + Zod** | Form doğrulama (2–5 seçenek kuralı, e-posta formatı). |
-| **Framer Motion** | Oy verince dolan çubuk, uçuşan kelebek animasyonları. |
-| **uv veya Poetry** | Python bağımlılık yönetimi; `requirements.txt`'ten daha deterministik. |
+| **Motion** (eski adıyla Framer Motion) | Oy verince dolan çubuk, uçuşan kelebek animasyonları. |
+| **requirements.txt** (pinlenmiş) | Python bağımlılıkları. Poetry/uv daha zarif olurdu ama **Vercel Python runtime `requirements.txt` okuyor**; pyproject sadece araç yapılandırması tutuyor. |
 | **django-cors-headers** | React ayrı origin'den gelecek, CORS şart. |
 | **django-environ** | `.env` yönetimi. |
+| **WhiteNoise** | Django admin'in statik dosyaları için. |
 | **Sentry** (opsiyonel) | Hata takibi, ücretsiz katman yeterli. |
 | **pytest + pytest-django** | Test. |
-| **Ruff + Black / ESLint + Prettier** | Lint & format. |
+| **Ruff + Black / oxlint + Prettier** | Lint & format. oxlint, güncel Vite şablonunun varsayılanı (ESLint yerine) ve belirgin biçimde hızlı. |
 
 ### 2.3 ⚠️ Deployment Konusunda Önemli Uyarı
 
@@ -144,22 +145,22 @@ whatIsTheNext/
 ├── PROJE_PLANI.md
 ├── README.md
 ├── .gitignore
+├── .gitattributes
 ├── backend/
 │   ├── api/
-│   │   └── index.py            # Vercel WSGI entry point
+│   │   └── index.py            # Vercel WSGI entry point        (Faz 6)
 │   ├── config/                 # Django project
-│   │   ├── settings/
-│   │   │   ├── base.py
-│   │   │   ├── dev.py
-│   │   │   └── prod.py
+│   │   ├── settings/           # base.py / dev.py / prod.py     (Faz 1)
 │   │   ├── urls.py
 │   │   └── wsgi.py
 │   ├── accounts/               # User modeli + auth endpointleri
 │   ├── polls/                  # Poll, Option, Vote
 │   ├── tests/
 │   ├── manage.py
-│   ├── pyproject.toml
-│   ├── vercel.json
+│   ├── requirements.txt        # uretim bagimliliklari (Vercel bunu okur)
+│   ├── requirements-dev.txt    # + pytest, ruff, black
+│   ├── pyproject.toml          # ruff / black / pytest yapilandirmasi
+│   ├── vercel.json                                              # (Faz 6)
 │   └── .env.example
 └── frontend/
     ├── src/
@@ -170,13 +171,14 @@ whatIsTheNext/
     │   │   └── polls/
     │   ├── hooks/
     │   ├── pages/
-    │   ├── styles/
+    │   ├── styles/             # theme.css (@theme tokenlari)
     │   ├── types/
     │   └── main.tsx
     ├── public/
     ├── index.html
-    ├── tailwind.config.ts
     ├── vite.config.ts
+    ├── .oxlintrc.json
+    ├── .prettierrc.json
     ├── package.json
     └── .env.example
 ```
@@ -340,6 +342,9 @@ her oy o çiçeği ziyaret eden bir böcek.
 | `bark-800` | `#3F3A36` | Ana metin (saf siyah değil, sıcak koyu kahve) |
 | `bark-400` | `#8A8179` | İkincil metin, placeholder |
 
+Tokenlar Tailwind v4'ün `@theme` bloğunda tanımlanır (`--color-leaf-500: #7CB342;` →
+`bg-leaf-500`, `text-leaf-500` sınıfları otomatik üretilir).
+
 Seçenek çubukları paletten sırayla renklenir: `leaf → honey → sky → lavender → petal`.
 
 ### 6.2 Tipografi
@@ -397,22 +402,28 @@ Her faz kendi dalında geliştirilir, `main`'e merge edilir ve sonunda çalışa
 
 **Çıktı:** Boş ama çalışan monorepo, git geçmişi başlamış.
 
-- [ ] `git init`, `main` dalı
-- [ ] `.gitignore` (Python, Node, `.env`, `.vercel`, `__pycache__`, `node_modules`)
-- [ ] `PROJE_PLANI.md` + `README.md`
-- [ ] `backend/` — Django projesi (`config`), `pyproject.toml`
-- [ ] `frontend/` — `npm create vite@latest . -- --template react-ts`
-- [ ] Ruff + Black + ESLint + Prettier yapılandırması
-- [ ] `.env.example` dosyaları
+- [x] `git init`, `main` dalı
+- [x] `.gitignore` (Python, Node, `.env`, `.vercel`, `__pycache__`, `node_modules`)
+- [x] `.gitattributes` (CRLF/LF normalizasyonu — Windows'ta şart)
+- [x] `PROJE_PLANI.md` + `README.md`
+- [x] `backend/` — Django 5.2 projesi (`config`) + boş `accounts` ve `polls` app'leri
+- [x] `backend/requirements.txt` (pinli) + `requirements-dev.txt` + `pyproject.toml` (ruff/black/pytest)
+- [x] `frontend/` — Vite 8 + React 19 + TypeScript
+- [x] Ruff + Black (backend), oxlint + Prettier (frontend)
+- [x] `.env.example` dosyaları
 
-**Commitler:**
+**Gerçekleşen commitler:**
 
 ```
-chore: initialize repository with gitignore and project plan
-chore(backend): scaffold django project
+docs: add project plan for what is the next
+chore: add gitignore and readme
+chore(backend): scaffold django project with accounts and polls apps
 chore(frontend): scaffold vite react typescript app
-chore: add linting and formatting configuration
+chore: normalize line endings and align plan with actual setup
 ```
+
+> Not: Faz 0 depoyu kurduğu için doğrudan `main` üzerinde yapıldı.
+> Faz 1'den itibaren her faz kendi dalında geliştirilir (§9.1).
 
 ---
 
@@ -501,7 +512,8 @@ test(polls): cover poll creation, voting and duplicate vote rules
 
 **Çıktı:** Statik ama tema tam oturmuş arayüz; mock veriyle görünüyor.
 
-- [ ] Tailwind kurulumu + `tailwind.config.ts` içine §6.1 palet tokenları
+- [ ] Tailwind v4 kurulumu (`@tailwindcss/vite`) + §6.1 palet tokenları `src/styles/theme.css`
+      içindeki `@theme` bloğunda
 - [ ] Google Fonts (Baloo 2 + Inter)
 - [ ] SVG maskot bileşenleri: `<Ladybug/>`, `<Butterfly/>`, `<Bee/>`, `<Daisy/>`, `<Sprout/>`
 - [ ] Ortak bileşenler: `Button`, `Input`, `Card`, `Badge`, `Spinner`, `EmptyState`, `Toast`
@@ -747,25 +759,34 @@ Kapsamlar: `backend`, `frontend`, `accounts`, `polls`, `ci`
 
 ## 12. Başlangıç Komutları
 
+Faz 0 tamamlandığı için artık depoyu klonlayıp doğrudan çalıştırabilirsin:
+
 ```bash
 # --- Backend ---
 cd backend
 python -m venv .venv
 source .venv/Scripts/activate        # PowerShell: .venv\Scripts\Activate.ps1
-pip install django djangorestframework djangorestframework-simplejwt \
-            django-cors-headers django-environ "psycopg[binary]" gunicorn
-django-admin startproject config .
-python manage.py startapp accounts
-python manage.py startapp polls
+pip install -r requirements-dev.txt
+cp .env.example .env                 # icini doldur
+python manage.py migrate
+python manage.py runserver
 
 # --- Frontend ---
 cd ../frontend
-npm create vite@latest . -- --template react-ts
 npm install
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
+cp .env.example .env
+npm run dev
+```
+
+Sonraki fazlarda eklenecek bağımlılıklar:
+
+```bash
+# Faz 4 — tasarim sistemi
+npm install tailwindcss @tailwindcss/vite
+
+# Faz 5 — entegrasyon
 npm install @tanstack/react-query axios react-router-dom \
-            react-hook-form zod @hookform/resolvers framer-motion
+            react-hook-form zod @hookform/resolvers motion
 ```
 
 ---

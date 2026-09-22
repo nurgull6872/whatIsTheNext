@@ -14,8 +14,8 @@ Ayrıntılı ürün tanımı, veri modeli, API sözleşmesi ve faz planı için:
 
 | Katman | Teknoloji |
 |---|---|
-| Backend | Django 5 + Django REST Framework + SimpleJWT |
-| Frontend | React 19 + Vite + TypeScript + Tailwind CSS |
+| Backend | Django 5.2 + Django REST Framework + SimpleJWT |
+| Frontend | React 19 + Vite 8 + TypeScript + Tailwind CSS v4 |
 | Veritabanı | Supabase (PostgreSQL) |
 | Deployment | Vercel |
 
@@ -40,7 +40,7 @@ python -m venv .venv
 # Git Bash / macOS / Linux
 source .venv/Scripts/activate
 
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 cp .env.example .env          # sonra .env icini doldur
 python manage.py migrate
 python manage.py runserver
@@ -82,7 +82,8 @@ Frontend: <http://localhost:5173>
 | `npm run dev` | Geliştirme sunucusu |
 | `npm run build` | Üretim derlemesi |
 | `npm run preview` | Derlemeyi lokalde çalıştır |
-| `npm run lint` | ESLint |
+| `npm run typecheck` | TypeScript kontrolü |
+| `npm run lint` | oxlint |
 | `npm run format` | Prettier |
 
 ---
