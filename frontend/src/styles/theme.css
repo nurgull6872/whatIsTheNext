@@ -1,0 +1,157 @@
+@import 'tailwindcss';
+
+/* =========================================================================
+   "Bahçe Teması" — renk, tipografi ve şekil tokenları (PROJE_PLANI.md §6)
+   Tailwind v4 CSS-first yapılandırma: her --color-* değişkeni otomatik
+   olarak bg-*, text-*, border-* vb. sınıflar üretir.
+   ========================================================================= */
+@theme {
+  /* --- Zemin --- */
+  --color-garden-cream: #fffdf7;
+  --color-garden-card: #ffffff;
+
+  /* --- Birincil: yaprak yeşili --- */
+  --color-leaf-100: #e8f5e0;
+  --color-leaf-300: #a8d47c;
+  --color-leaf-500: #7cb342;
+  --color-leaf-600: #5a8a2e;
+  /* Buton/CTA arka planinda BEYAZ METIN icin leaf-700 kullanilir.
+     leaf-500 (2.50:1) ve leaf-600 (4.11:1) AA'nin 4.5:1 esigini
+     gecemiyor; leaf-700 6.25:1 ile rahatca geciyor (dogrulanmis, §6.5). */
+  --color-leaf-700: #436b20;
+
+  /* --- Vurgu: uğur böceği kırmızısı (kazanan seçenek, uyarı) --- */
+  --color-ladybug-100: #fbe1d8;
+  --color-ladybug-500: #e4572e;
+  /* Beyaz metin icin ladybug-600 kullanilir (4.91:1, dogrulanmis).
+     ladybug-500 uzerine beyaz metin (3.68:1) AA'yi gecmiyor. */
+  --color-ladybug-600: #c8431e;
+
+  /* --- İkincil vurgu: bal sarısı (rozet, yıldız, arı) --- */
+  --color-honey-100: #fff6df;
+  --color-honey-400: #ffc94a;
+  /* honey-400 acik bir ton oldugu icin uzerine her zaman koyu metin
+     kullanilir (bark-800, 7.33:1), beyaz metin degil. */
+  --color-honey-600: #c98f10;
+
+  /* --- Bilgi / link: gökyüzü mavisi --- */
+  --color-sky-100: #e5f8ff;
+  /* sky-300 sadece dekoratif/kenarlik icin (beyaz metin 1.67:1 ile
+     ciddi sekilde basarisiz). Metin/link icin sky-600 veya sky-700. */
+  --color-sky-300: #7dd3fc;
+  --color-sky-600: #0284c7;
+  /* Beyaz metinli buton/rozet icin sky-700 (5.92:1). sky-600 (4.10:1)
+     kucuk metinde AA'yi gecmiyor, sadece buyuk metin/ikon icin uygun. */
+  --color-sky-700: #036a9c;
+
+  /* --- Dekoratif: lavanta --- */
+  --color-lavender-100: #f1ecfe;
+  /* lavender-400 sadece ikon/kenarlik/buyuk metin icin (koyu metinle
+     4.13:1, kucuk metinde AA sinirinda basarisiz). Okunabilir rozet
+     zemini icin lavender-300 (bark-800 ile 5.73:1) kullanilir. */
+  --color-lavender-300: #c1aefb;
+  --color-lavender-400: #a78bfa;
+  /* Beyaz metinli buton icin lavender-700 (6.37:1). */
+  --color-lavender-700: #6947c4;
+
+  /* --- Dekoratif: çiçek pembesi --- */
+  --color-petal-100: #fef1f8;
+  --color-petal-200: #fbcfe8;
+  --color-petal-600: #db4c9b;
+
+  /* --- Metin --- */
+  --color-bark-800: #3f3a36;
+  /* Ikincil ama okunmasi gereken metin (etiket, tarih) icin bark-600
+     (5.87:1). bark-400 (3.76:1) sadece buyuk/dekoratif metin icindir,
+     kucuk govde metninde AA'yi gecmez. */
+  --color-bark-600: #6b6259;
+  --color-bark-400: #8a8179;
+  --color-bark-200: #d8d2c9;
+
+  /* --- Tipografi --- */
+  --font-heading: 'Baloo 2', 'Fredoka', system-ui, sans-serif;
+  --font-body: 'Inter', 'Nunito', system-ui, sans-serif;
+
+  /* --- Köşe yuvarlaklığı --- */
+  --radius-card: 1rem; /* 16px, rounded-2xl karşılığı */
+
+  /* --- Gölge: yumuşak ve renkli, sert siyah değil (§6.3) --- */
+  --shadow-garden: 0 4px 20px rgba(124, 179, 66, 0.12);
+  --shadow-garden-lg: 0 12px 32px rgba(124, 179, 66, 0.18);
+}
+
+/* =========================================================================
+   Global taban stiller
+   ========================================================================= */
+
+body {
+  background-color: var(--color-garden-cream);
+  color: var(--color-bark-800);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+/* Çok soluk (~%6 opaklık), tekrarlayan yaprak deseni (§6.3). Sayfa
+   arka planına eklenir, içerikten ayrı bir katman olarak. */
+.garden-pattern-bg {
+  background-color: var(--color-garden-cream);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%237CB342' stroke-width='2' opacity='0.06'%3E%3Cpath d='M20 60c0-11 9-20 20-20s20 9 20 20-9 20-20 20'/%3E%3Ccircle cx='90' cy='30' r='10'/%3E%3Cpath d='M70 100c8-8 8-20 0-28'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 120px 120px;
+}
+
+/* =========================================================================
+   Erişilebilirlik (§6.5)
+   ========================================================================= */
+
+/* Tüm interaktif öğelerde görünür odak halkası. */
+:focus-visible {
+  outline: 3px solid var(--color-sky-600);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Spinner: aricik cicegin etrafinda doner, kendisi dik kalir (§6.4). */
+@keyframes orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes counter-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+.animate-orbit {
+  animation: orbit 1.6s linear infinite;
+}
+.animate-counter-orbit {
+  animation: counter-orbit 1.6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
