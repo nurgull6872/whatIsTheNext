@@ -1,0 +1,37 @@
+# Arac yapilandirmasi (ruff, black, pytest).
+# Bagimliliklar requirements.txt icinde tutulur cunku Vercel Python
+# runtime'i requirements.txt okur.
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = [".venv", "*/migrations/*"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+    "DJ",  # flake8-django
+    "C4",  # comprehensions
+    "SIM", # simplify
+]
+ignore = [
+    "E501",  # satir uzunlugunu black yonetiyor
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["accounts", "config", "polls"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+extend-exclude = '/(\.venv|migrations)/'
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["test_*.py", "*_test.py"]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
