@@ -1,18 +1,33 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import type { FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
 
+import { toApiError } from '../api/errors';
 import { Ladybug } from '../components/mascots';
 import { Button, Input } from '../components/ui';
+import { type RegisterFormValues, registerSchema } from '../features/auth/schemas';
+import { useAuth } from '../hooks/useAuth';
 
 export function RegisterPage() {
-  const [email, setEmail] = useState('');
-  const [displayName, setDisplayName] = useState('');
-  const [password, setPassword] = useState('');
+  const { register: registerUser } = useAuth();
+  const navigate = useNavigate();
+  const [formError, setFormError] = useState<string | null>(null);
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    // Faz 5'te gercek /auth/register/ cagrisi burada olacak.
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterFormValues>({ resolver: zodResolver(registerSchema) });
+
+  const onSubmit = async (values: RegisterFormValues) => {
+    setFormError(null);
+    try {
+      await registerUser(values);
+      navigate('/', { replace: true });
+    } catch (error) {
+      setFormError(toApiError(error).message);
+    }
   };
 
   return (
@@ -23,35 +38,36 @@ export function RegisterPage() {
         <p className="mt-1 text-sm text-bark-600">Anketlerinin üstünde görünecek bir ad seç.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex w-full flex-col gap-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex w-full flex-col gap-4" noValidate>
         <Input
           label="E-posta"
           type="email"
           autoComplete="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          error={errors.email?.message}
+          {...register('email')}
         />
         <Input
           label="Görünen ad"
           hint="3-32 karakter; harf, rakam ve alt çizgi kullanabilirsin."
-          required
-          minLength={3}
-          maxLength={32}
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
+          error={errors.display_name?.message}
+          {...register('display_name')}
         />
         <Input
           label="Şifre"
           type="password"
           autoComplete="new-password"
           hint="En az 8 karakter."
-          required
-          minLength={8}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          error={errors.password?.message}
+          {...register('password')}
         />
-        <Button type="submit" size="lg">
+
+        {formError ? (
+          <p role="alert" aria-live="polite" className="text-sm font-medium text-ladybug-600">
+            {formError}
+          </p>
+        ) : null}
+
+        <Button type="submit" size="lg" isLoading={isSubmitting}>
           Kayıt Ol
         </Button>
       </form>

@@ -1,7 +1,8 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
-import { Ladybug } from '../mascots';
+import { useAuth } from '../../hooks/useAuth';
 import { cn } from '../../lib/cn';
+import { Ladybug } from '../mascots';
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
@@ -21,9 +22,14 @@ const ctaLinkClass = ({ isActive }: { isActive: boolean }) =>
   );
 
 export function Header() {
-  // Faz 5'te AuthContext eklenince buradaki üye/ziyaretçi görünümü gerçek
-  // oturum durumuna göre değişecek; şimdilik ziyaretçi görünümü sabit.
-  const isAuthenticated = false;
+  const { status, user, logout } = useAuth();
+  const navigate = useNavigate();
+  const isAuthenticated = status === 'authenticated';
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
 
   return (
     <header className="sticky top-0 z-40 border-b border-bark-200/60 bg-garden-cream/90 backdrop-blur">
@@ -43,10 +49,17 @@ export function Header() {
                 Anket Oluştur
               </NavLink>
               <NavLink to="/profile" className={navLinkClass}>
-                Profilim
+                {user?.display_name ?? 'Profilim'}
               </NavLink>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className={navLinkClass({ isActive: false })}
+              >
+                Çıkış
+              </button>
             </>
-          ) : (
+          ) : status === 'guest' ? (
             <>
               <NavLink to="/login" className={navLinkClass}>
                 Giriş Yap
@@ -55,7 +68,7 @@ export function Header() {
                 Kayıt Ol
               </NavLink>
             </>
-          )}
+          ) : null}
         </nav>
       </div>
     </header>
