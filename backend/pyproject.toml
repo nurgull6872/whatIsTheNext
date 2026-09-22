@@ -1,6 +1,22 @@
-# Arac yapilandirmasi (ruff, black, pytest).
-# Bagimliliklar requirements.txt icinde tutulur cunku Vercel Python
-# runtime'i requirements.txt okur.
+# [project] tablosu: Vercel'in yeni Python build sistemi (uv) bunu
+# okuyor - `requirements.txt` ile BIREBIR AYNI TUTULMALI (asagidaki
+# dependencies listesi). requirements.txt Railway/Render gibi
+# Vercel disi platformlar ve `pip install -r` ile yerel kurulum icin
+# hala duruyor; ikisi arasinda tek gercek kaynak yok, elle senkron.
+[project]
+name = "what-is-the-next-backend"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "Django==5.2.17",
+    "djangorestframework==3.18.1",
+    "djangorestframework-simplejwt==5.5.1",
+    "django-cors-headers==4.9.0",
+    "django-environ==0.14.0",
+    "psycopg[binary]==3.3.6",
+    "whitenoise==6.12.0",
+    "gunicorn==26.2.0",
+]
 
 [tool.ruff]
 line-length = 100

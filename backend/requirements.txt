@@ -1,5 +1,7 @@
 # Uretim bagimliliklari.
-# Vercel Python runtime bu dosyayi okur; pyproject/poetry degil.
+# Railway/Render gibi Vercel disi platformlar ve yerel `pip install -r`
+# icin. Vercel artik pyproject.toml'daki [project.dependencies]
+# listesini okuyor (uv ile) - ikisi elle senkron tutulmali.
 
 Django==5.2.17
 djangorestframework==3.18.1
