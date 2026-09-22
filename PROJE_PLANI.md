@@ -526,26 +526,32 @@ test(polls): cover poll creation, voting and duplicate vote rules
 
 **Çıktı:** Statik ama tema tam oturmuş arayüz; mock veriyle görünüyor.
 
-- [ ] Tailwind v4 kurulumu (`@tailwindcss/vite`) + §6.1 palet tokenları `src/styles/theme.css`
+- [x] Tailwind v4 kurulumu (`@tailwindcss/vite`) + §6.1 palet tokenları `src/styles/theme.css`
       içindeki `@theme` bloğunda
-- [ ] Google Fonts (Baloo 2 + Inter)
-- [ ] SVG maskot bileşenleri: `<Ladybug/>`, `<Butterfly/>`, `<Bee/>`, `<Daisy/>`, `<Sprout/>`
-- [ ] Ortak bileşenler: `Button`, `Input`, `Card`, `Badge`, `Spinner`, `EmptyState`, `Toast`
-- [ ] `Layout` — bahçe desenli arka plan, header (logo + uğur böceği), footer
-- [ ] React Router rotaları (tüm sayfalar iskelet halinde)
-- [ ] `prefers-reduced-motion` ve focus ring desteği
-- [ ] Kontrast oranlarının kontrolü
+- [x] Google Fonts (Baloo 2 + Inter)
+- [x] SVG maskot bileşenleri: `<Ladybug/>`, `<Butterfly/>`, `<Bee/>`, `<Daisy/>`, `<Sprout/>`
+- [x] Ortak bileşenler: `Button`, `Input`, `Card`, `Badge`, `Spinner`, `EmptyState`, `Toast`
+- [x] `PollCard`, `OptionBar` — mock veriyle (Faz 5'te API'ye bağlanacak)
+- [x] `Layout` — bahçe desenli arka plan, header (logo + uğur böceği), footer
+- [x] React Router rotaları (7 sayfa, tümü iskelet halinde ama mock veriyle görsel olarak tam)
+- [x] `prefers-reduced-motion` ve focus ring desteği
+- [x] Kontrast oranlarının kontrolü — küçük bir Python betiğiyle tüm renk çiftleri hesaplandı;
+      AA (4.5:1) eşiğini geçemeyen tonlar için metin-güvenli varyantlar eklendi
+      (`leaf-700`, `ladybug-600`, `sky-700`, `lavender-700/300`), `theme.css` içinde belgelenmiş
 
-**Commitler:**
+**Gerçekleşen commitler:**
 
 ```
-feat(frontend): add tailwind with garden theme color tokens
-feat(frontend): add baloo and inter typography setup
+chore(frontend): remove vite template boilerplate, add design system deps
+feat(frontend): add tailwind v4 garden theme with typography and a11y base
 feat(frontend): add svg mascot components for garden theme
 feat(frontend): add shared ui component library
+feat(frontend): add poll display components
 feat(frontend): add app layout with routing skeleton
-style(frontend): add accessibility focus and reduced motion support
 ```
+
+> Not: `oxlint` iki uyarı verdi (biri render sırasında `Date.now()` çağrısı, diğeri
+> Fast Refresh'i bozan bir dosya yapısı) — ikisi de düzeltildi, detay commit mesajlarında.
 
 ---
 

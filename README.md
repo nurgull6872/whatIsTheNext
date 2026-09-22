@@ -124,7 +124,7 @@ Ayrıntı: [PROJE_PLANI.md § 9](PROJE_PLANI.md#9-git-akışı)
 | 1 — Veritabanı ve modeller | ✅ Tamamlandı |
 | 2 — Kimlik doğrulama API | ✅ Tamamlandı |
 | 3 — Anket ve oylama API | ✅ Tamamlandı |
-| 4 — Tasarım sistemi | ⬜ |
+| 4 — Tasarım sistemi | ✅ Tamamlandı |
 | 5 — Frontend entegrasyonu | ⬜ |
 | 6 — Deployment | ⬜ |
 | 7 — Cila ve sertleştirme | ⬜ |
