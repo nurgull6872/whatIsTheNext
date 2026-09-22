@@ -431,26 +431,29 @@ chore: normalize line endings and align plan with actual setup
 
 **Çıktı:** Supabase'e bağlı, migration'ları uygulanmış şema. Admin panelinden veri girilebiliyor.
 
-- [ ] Supabase projesi aç, connection string al (**pooler, port 6543**)
-- [ ] `django-environ` ile `DATABASE_URL` okunması
-- [ ] `settings/base.py`, `dev.py`, `prod.py` ayrımı
-- [ ] `accounts.User` custom modeli (UUID PK, email login, `display_name`)
-- [ ] `polls.Poll`, `polls.Option`, `polls.Vote` + kısıtlar
-- [ ] İlk migration + `migrate`
-- [ ] Django admin kayıtları (`list_display`, `search_fields`)
-- [ ] Süper kullanıcı oluşturma
+- [x] `django-environ` ile `DATABASE_URL` okunması (boşsa yerel sqlite'a düşer)
+- [x] `settings/base.py`, `dev.py`, `prod.py` ayrımı
+- [x] `accounts.User` custom modeli (UUID PK, email login, `display_name`)
+- [x] `polls.Poll`, `polls.Option`, `polls.Vote` + kısıtlar
+- [x] İlk migration + `migrate`
+- [x] Django admin kayıtları (`list_display`, `search_fields`, inline seçenekler)
+- [x] Model seviyesi testler (14 test)
+- [ ] **Supabase projesi aç, connection string al (pooler, port 6543)** → senin yapman gerekiyor
+- [ ] Süper kullanıcı oluşturma (`python manage.py createsuperuser`) → şifre gerektiği için sende
 
-**Commitler:**
+**Gerçekleşen commitler:**
 
 ```
-feat(backend): configure supabase postgres connection via environ
+feat(backend): split settings and read config from environment
 feat(accounts): add custom user model with email login and display name
 feat(polls): add poll, option and vote models with uniqueness constraints
-feat(backend): register models in django admin
-chore(backend): add initial migrations
+test(polls): cover model level voting and uniqueness rules
 ```
 
-⚠️ **Dikkat:** `AUTH_USER_MODEL` ayarı ilk `makemigrations` öncesinde yapılmalı.
+⚠️ **Dikkat:** `AUTH_USER_MODEL` ayarı ilk `makemigrations` öncesinde yapıldı.
+
+> Supabase bağlanana kadar proje yerel sqlite ile çalışır. `DATABASE_URL` dolduğunda
+> aynı migration'lar PostgreSQL'e uygulanır; kod değişmez.
 
 ---
 

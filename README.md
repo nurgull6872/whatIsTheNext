@@ -121,7 +121,7 @@ Ayrıntı: [PROJE_PLANI.md § 9](PROJE_PLANI.md#9-git-akışı)
 | Faz | Durum |
 |---|---|
 | 0 — Temel kurulum | ✅ Tamamlandı |
-| 1 — Veritabanı ve modeller | ⬜ |
+| 1 — Veritabanı ve modeller | ✅ Tamamlandı |
 | 2 — Kimlik doğrulama API | ⬜ |
 | 3 — Anket ve oylama API | ⬜ |
 | 4 — Tasarım sistemi | ⬜ |
