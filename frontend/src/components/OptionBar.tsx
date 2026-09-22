@@ -1,5 +1,7 @@
-import type { PollOption } from '../types/poll';
+import { motion } from 'motion/react';
+
 import { cn } from '../lib/cn';
+import type { PollOption } from '../types/poll';
 
 interface OptionBarProps {
   option: PollOption;
@@ -34,9 +36,11 @@ export function OptionBar({
         interactive && 'hover:border-leaf-500',
       )}
     >
-      <div
-        className={cn('absolute inset-y-0 left-0 opacity-25 transition-all duration-500', barColor)}
-        style={{ width: `${option.percentage}%` }}
+      <motion.div
+        className={cn('absolute inset-y-0 left-0 opacity-25', barColor)}
+        initial={false}
+        animate={{ width: `${option.percentage}%` }}
+        transition={{ type: 'spring', stiffness: 200, damping: 26 }}
         aria-hidden="true"
       />
       <div className="relative flex items-center justify-between gap-3">

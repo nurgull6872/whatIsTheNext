@@ -1,10 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 
-import { Butterfly } from '../components/mascots';
+import { listPolls } from '../api/polls';
+import { queryKeys } from '../api/queryClient';
+import { Butterfly, Sprout } from '../components/mascots';
 import { PollCard } from '../components/PollCard';
-import { EmptyState } from '../components/ui';
+import { EmptyState, Spinner } from '../components/ui';
 import { cn } from '../lib/cn';
-import { MOCK_POLLS } from '../lib/mockPolls';
 import type { PollSort } from '../types/poll';
 
 const SORT_TABS: { value: PollSort; label: string }[] = [
@@ -15,18 +17,12 @@ const SORT_TABS: { value: PollSort; label: string }[] = [
 
 export function HomePage() {
   const [sort, setSort] = useState<PollSort>('new');
-  // Render sirasinda Date.now() cagirmamak icin lazy initializer ile bir kere alinir.
-  const [mountedAt] = useState(() => Date.now());
+  const params = { sort };
 
-  // Faz 5'te gercek API cagrisina donusecek; simdilik mock veri uzerinde
-  // basit bir siralama gosterimi.
-  const polls = useMemo(() => {
-    return [...MOCK_POLLS].sort((a, b) => {
-      if (sort === 'top') return b.total_votes - a.total_votes;
-      if (sort === 'hot') return b.total_votes / (mountedAt - new Date(a.created_at).getTime());
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-    });
-  }, [sort, mountedAt]);
+  const { data, isPending, isError, error, refetch } = useQuery({
+    queryKey: queryKeys.polls.list(params),
+    queryFn: () => listPolls(params),
+  });
 
   return (
     <div className="flex flex-col gap-6">
@@ -61,15 +57,34 @@ export function HomePage() {
         ))}
       </div>
 
-      {polls.length === 0 ? (
+      {isPending ? (
+        <div className="flex justify-center py-16">
+          <Spinner label="Anketler yükleniyor" />
+        </div>
+      ) : isError ? (
         <EmptyState
           icon={Butterfly}
+          title="Anketler yüklenemedi"
+          description={error.message}
+          action={
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="font-medium text-leaf-700 hover:underline"
+            >
+              Tekrar dene
+            </button>
+          }
+        />
+      ) : data.results.length === 0 ? (
+        <EmptyState
+          icon={Sprout}
           title="Henüz anket yok"
           description="İlk anketi sen aç, kalabalık kararını versin."
         />
       ) : (
         <div className="flex flex-col gap-4">
-          {polls.map((poll) => (
+          {data.results.map((poll) => (
             <PollCard key={poll.id} poll={poll} />
           ))}
         </div>
