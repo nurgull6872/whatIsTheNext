@@ -71,6 +71,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "polls.middleware.VoterTokenMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -147,6 +148,7 @@ REST_FRAMEWORK = {
         # Genel anonim limit. Kayit/giris kendi dar throttle sinifina sahip (§2.2).
         "anon": "100/minute",
         "auth": "10/minute",
+        "vote": "30/minute",
     },
     "EXCEPTION_HANDLER": "config.exceptions.api_exception_handler",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
