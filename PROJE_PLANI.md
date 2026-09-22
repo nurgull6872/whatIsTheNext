@@ -461,22 +461,26 @@ test(polls): cover model level voting and uniqueness rules
 
 **Çıktı:** Kayıt / giriş / token yenileme / profil endpoint'leri çalışıyor.
 
-- [ ] DRF + SimpleJWT kurulumu, `REST_FRAMEWORK` ayarları
-- [ ] `RegisterSerializer` — e-posta benzersizliği, şifre gücü (`validate_password`),
+- [x] DRF + SimpleJWT kurulumu, `REST_FRAMEWORK` ayarları
+- [x] `RegisterSerializer` — e-posta benzersizliği, şifre gücü (`validate_password`),
       `display_name` benzersizliği ve formatı (3–32 karakter; harf, rakam, `_`)
-- [ ] `POST /auth/register|login|refresh|logout`
-- [ ] `GET|PATCH /auth/me/`
-- [ ] `django-cors-headers` yapılandırması
-- [ ] Throttle: register/login için `AnonRateThrottle`
-- [ ] Testler: kayıt, mükerrer e-posta, hatalı giriş, token yenileme
+- [x] `POST /auth/register|login|refresh|logout`
+- [x] `GET|PATCH /auth/me/`
+- [x] `django-cors-headers` yapılandırması
+- [x] Throttle: register/login için ayrı `ScopedRateThrottle` (`auth` kapsamı, 10/dk)
+- [x] Birleşik hata govdesi (`config/exceptions.py`, §5.3)
+- [x] Ayrı `config.settings.test` modülü — testler `DATABASE_URL` Supabase'e işaret
+      etse bile her zaman sqlite kullanır (izole + hızlı: 31 test < 1 sn)
+- [x] Testler: kayıt, mükerrer e-posta/ad, zayıf şifre, hatalı giriş, token yenileme,
+      çıkışta kara listeye alma, profil güncelleme (31 test)
+- [x] Gerçek Supabase üzerinde uçtan uca duman testi (register → duplicate reddi)
 
-**Commitler:**
+**Gerçekleşen commitler:**
 
 ```
-feat(backend): add drf and simplejwt authentication setup
-feat(accounts): add register and login endpoints with validation
-feat(accounts): add profile read and update endpoints
-feat(backend): configure cors and rate limiting
+feat(backend): add drf, simplejwt and cors configuration
+feat(backend): add unified error response handler
+feat(accounts): add register, login, refresh, logout and profile endpoints
 test(accounts): cover registration and authentication flows
 ```
 

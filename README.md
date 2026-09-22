@@ -71,7 +71,7 @@ Frontend: <http://localhost:5173>
 | `python manage.py makemigrations` | Migration üret |
 | `python manage.py migrate` | Migration uygula |
 | `python manage.py createsuperuser` | Admin kullanıcısı |
-| `pytest` | Testler |
+| `pytest` | Testler (sqlite, Supabase'e dokunmaz) |
 | `ruff check .` | Lint |
 | `black .` | Format |
 
@@ -122,7 +122,7 @@ Ayrıntı: [PROJE_PLANI.md § 9](PROJE_PLANI.md#9-git-akışı)
 |---|---|
 | 0 — Temel kurulum | ✅ Tamamlandı |
 | 1 — Veritabanı ve modeller | ✅ Tamamlandı |
-| 2 — Kimlik doğrulama API | ⬜ |
+| 2 — Kimlik doğrulama API | ✅ Tamamlandı |
 | 3 — Anket ve oylama API | ⬜ |
 | 4 — Tasarım sistemi | ⬜ |
 | 5 — Frontend entegrasyonu | ⬜ |

@@ -4,6 +4,7 @@ Ortama ozgu olanlar dev.py ve prod.py icinde. Dogrudan bu modulu
 DJANGO_SETTINGS_MODULE olarak kullanmayin.
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -20,6 +21,8 @@ env = environ.Env(
     CSRF_TRUSTED_ORIGINS=(list, []),
     DATABASE_URL=(str, ""),
     VOTER_TOKEN_SALT=(str, ""),
+    JWT_ACCESS_LIFETIME_MIN=(int, 15),
+    JWT_REFRESH_LIFETIME_DAYS=(int, 7),
 )
 
 # .env varsa okunur; yoksa gercek ortam degiskenleri kullanilir (Vercel boyle calisir).
@@ -45,7 +48,11 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = [
+    "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
+    "corsheaders",
+]
 
 LOCAL_APPS = [
     "accounts",
@@ -57,6 +64,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -121,6 +129,51 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
+
+
+# --------------------------------------------------------------------------
+# Django REST Framework
+# --------------------------------------------------------------------------
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticatedOrReadOnly",),
+    "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
+    "DEFAULT_PARSER_CLASSES": ("rest_framework.parsers.JSONParser",),
+    "DEFAULT_THROTTLE_CLASSES": ("rest_framework.throttling.AnonRateThrottle",),
+    "DEFAULT_THROTTLE_RATES": {
+        # Genel anonim limit. Kayit/giris kendi dar throttle sinifina sahip (§2.2).
+        "anon": "100/minute",
+        "auth": "10/minute",
+    },
+    "EXCEPTION_HANDLER": "config.exceptions.api_exception_handler",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 20,
+    "TEST_REQUEST_DEFAULT_FORMAT": "json",
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=env("JWT_ACCESS_LIFETIME_MIN")),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=env("JWT_REFRESH_LIFETIME_DAYS")),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+}
+
+
+# --------------------------------------------------------------------------
+# CORS
+# --------------------------------------------------------------------------
+# React frontend ayri origin'den (Vercel/localhost:5173) istek atacagi icin sart.
+
+CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS")
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS")
 
 
 # --------------------------------------------------------------------------
