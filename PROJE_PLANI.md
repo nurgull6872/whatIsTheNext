@@ -559,32 +559,38 @@ feat(frontend): add app layout with routing skeleton
 
 **Çıktı:** Lokalde tam çalışan uygulama.
 
-- [ ] Axios client + `access` token interceptor + 401'de `refresh` retry
-- [ ] TanStack Query kurulumu, query key stratejisi
-- [ ] `AuthContext` — kullanıcı durumu, `login/register/logout`, token saklama
-      (`access` bellekte, `refresh` `HttpOnly` cookie'de)
-- [ ] **Giriş** ve **Kayıt** sayfaları (React Hook Form + Zod)
-- [ ] **Ana sayfa** — anket akışı, sayfalama, sıralama sekmeleri
-- [ ] **Anket detayı** — oy verme, animasyonlu sonuç çubukları, kazanan rozeti
-- [ ] **Anket oluşturma** — dinamik seçenek satırları (min 2, max 5, ekle/sil butonları)
-- [ ] **Profil** — takma ad düzenleme + kendi anketleri
-- [ ] Optimistic update: oy basınca çubuk anında dolsun, hata olursa geri alınsın
-- [ ] Yükleniyor / hata / boş durum ekranları (arı ve kelebek animasyonlu)
-- [ ] 404 sayfası
+- [x] Axios client + `access` token interceptor + 401'de `refresh` retry (eşzamanlı 401'ler
+      tek bir yenileme isteğinde kuyruklanır)
+- [x] TanStack Query kurulumu, query key stratejisi (`api/queryClient.ts`)
+- [x] `AuthContext` — kullanıcı durumu, `login/register/logout`, token saklama
+- [x] **Giriş** ve **Kayıt** sayfaları (React Hook Form + Zod)
+- [x] **Ana sayfa** — anket akışı, sayfalama, sıralama sekmeleri
+- [x] **Anket detayı** — oy verme, animasyonlu sonuç çubukları (`motion/react`), kazanan rozeti
+- [x] **Anket oluşturma** — dinamik seçenek satırları (`useFieldArray`, min 2, max 5)
+- [x] **Profil** — takma ad düzenleme + kendi anketleri
+- [x] Optimistic update: oy basınca çubuk anında dolar, hata olursa geri alınır
+- [x] Yükleniyor / hata / boş durum ekranları (arı ve kelebek animasyonlu)
+- [x] 404 sayfası (Faz 4'te yapılmıştı)
+- [x] Gerçek Supabase üzerinde uçtan uca doğrulama (kayıt → anket oluştur →
+      ziyaretçi çerezle oy → kalıcılık kontrolü → kapat → sil)
 
-**Commitler:**
+**Gerçekleşen commitler:**
 
 ```
+chore(frontend): add integration dependencies and shared types
 feat(frontend): add api client with jwt refresh interceptor
 feat(frontend): add auth context and protected routes
 feat(frontend): add login and register pages with validation
-feat(frontend): add poll feed with sorting and pagination
-feat(frontend): add poll detail page with animated results
-feat(frontend): add poll creation form with dynamic options
-feat(frontend): add profile page with display name editing
-feat(frontend): add optimistic voting updates
-feat(frontend): add loading, empty and error states
+feat(frontend): wire poll feed, detail, creation and profile to the api
 ```
+
+> ⚠️ **Plandan sapma — token saklama:** Plan `refresh` token'ın `HttpOnly` cookie'de
+> tutulmasını öngörüyordu, ama Faz 2'de zaten test edilip birleştirilen backend
+> (`accounts/views.py`) token'ları düz JSON gövdesinde dönüyor, cookie olarak değil.
+> Backend'i şimdi değiştirmek (57 testi ve API sözleşmesini bozma riskiyle) orantısız
+> olacağından, frontend gerçek davranışa uyduruldu: `access` bellekte (React dışı bir
+> modül değişkeninde), `refresh` `localStorage`'da. Bu, `HttpOnly` cookie kadar XSS'e
+> dayanıklı değil — ayrıntı ve gerekçe `api/tokenStore.ts` içinde belgeli.
 
 ---
 
