@@ -598,26 +598,40 @@ feat(frontend): wire poll feed, detail, creation and profile to the api
 
 **Çıktı:** Canlıda çalışan uygulama.
 
-- [ ] `backend/api/index.py` — Vercel WSGI handler
-- [ ] `backend/vercel.json` — Python build + route yönlendirmesi
-- [ ] `prod.py`: `DEBUG=False`, `ALLOWED_HOSTS`, `SECURE_SSL_REDIRECT`, HSTS,
-      `CSRF_TRUSTED_ORIGINS`
-- [ ] Supabase **pooler** connection string (`:6543`), `CONN_MAX_AGE=0`
-      (serverless'ta Django tarafında bağlantı tutma kapalı olmalı)
-- [ ] Vercel env değişkenleri (§8)
-- [ ] Frontend Vercel'e deploy; `VITE_API_URL` prod backend'e işaret etsin
-- [ ] CORS ve cookie ayarları prod domainlere göre (`SameSite=None; Secure`)
-- [ ] Migration'ları elle çalıştır (serverless'ta otomatik migrate **yapma**)
-- [ ] Duman testi: kayıt → anket aç → ziyaretçi oyu → sonuç
+- [x] `backend/api/index.py` — Vercel WSGI handler
+- [x] `backend/vercel.json` — Python build + route yönlendirmesi
+- [x] `prod.py`: `DEBUG=False`, `ALLOWED_HOSTS`, `SECURE_SSL_REDIRECT`, HSTS,
+      `CSRF_TRUSTED_ORIGINS` (Faz 1'de yapılmıştı; `manage.py check --deploy` ile
+      doğrulandı, tek uyarı test amaçlı sahte secret key'den kaynaklıydı)
+- [x] Supabase **pooler** connection string (`:6543`), `CONN_MAX_AGE=0`
+      (Faz 1'den beri zaten aktif)
+- [x] `frontend/vercel.json` — SPA rewrite (`/polls/:id` gibi doğrudan linkler 404 vermesin)
+- [x] Statik dosya sağlamlaştırma — `collectstatic` çıktısı commit edildi, prod'da
+      manifest gerektirmeyen depolamaya geçildi (build adımı garanti olmadığından
+      admin panelinin tamamen çökmesi yerine en kötü ihtimalle stilsiz görünmesi sağlandı)
+- [x] `backend/api/index.py` yerel olarak gerçek Supabase'e bağlanarak doğrulandı
+      (prod ayarlarıyla, HTTPS simülasyonuyla — `manage.py runserver` değil, gerçek WSGI çağrısı)
+- [ ] **Vercel'de proje oluşturma + env değişkenleri** → hesap gerektirir, **sende**
+      (adım adım rehber: [DEPLOYMENT.md](DEPLOYMENT.md))
+- [ ] **Frontend Vercel'e deploy** → aynı sebeple **sende**
+- [ ] CORS/CSRF prod domainlerine göre güncelleme → deploy sonrası gerçek adresler
+      belli olunca **sende** (rehberde adım 3)
+- [x] Migration'ları elle çalıştırma politikası zaten geçerli (Faz 1'den beri hep böyleydi)
+- [ ] Duman testi: kayıt → anket aç → ziyaretçi oyu → sonuç → **canlıda sende**
 
-**Commitler:**
+**Gerçekleşen commitler:**
 
 ```
 chore(backend): add vercel wsgi entry point and configuration
-chore(backend): add production settings with security headers
+chore(backend): harden production static file serving for vercel
 chore(frontend): add vercel deployment configuration
-docs: add deployment and environment variable guide
+docs: add deployment guide
 ```
+
+> Not: Bu faz Supabase'e benzer şekilde bölünüyor — kod/yapılandırma tarafı
+> tamamen hazır ve yerel olarak gerçek veritabanına karşı doğrulandı, ama gerçek
+> deploy bir Vercel hesabı gerektirdiği için o kısım sende. [DEPLOYMENT.md](DEPLOYMENT.md)
+> adım adım anlatıyor.
 
 ⚠️ Cold start rahatsız ederse backend'i Railway'e taşı (§2.3-B). Uygulama kodu değişmez.
 
