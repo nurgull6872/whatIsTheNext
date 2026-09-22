@@ -21,7 +21,11 @@ db.sqlite3
 db.sqlite3-journal
 test_db.sqlite3
 test_db.sqlite3-journal
-/backend/staticfiles/
+# backend/staticfiles/ BILEREK gitignore'da DEGIL: Vercel serverless'ta
+# build adiminda `collectstatic` calistigi garanti olmadigindan (Faz 6),
+# admin panelinin CSS'i (Django admin + DRF browsable API) depoya
+# commit edilip deployment paketiyle birlikte gonderiliyor. Yeniden
+# uretmek icin: python manage.py collectstatic --noinput
 /backend/media/
 
 # Test / coverage

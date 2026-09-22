@@ -32,6 +32,20 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS")
 
+# --- Statik dosyalar ---
+# base.py'deki CompressedManifestStaticFilesStorage, `collectstatic`
+# calismamissa (manifest dosyasi yoksa) her {% static %} kullaniminda
+# sunucuyu 500 ile dusurur. Vercel build adiminda collectstatic'in
+# calistigi garanti olmadigindan, uretimde manifest gerektirmeyen, daha
+# hosgorulu depolamaya dusulur: eksik bir dosya sadece 404 verir, tum
+# admin panelini kilitlemez. Admin panelinin CSS'i olmadan gorunmesi
+# (Faz 7'de collectstatic build adimiyla cozulecek) urunun asil
+# arayuzunu (React) etkilemez.
+STORAGES = {  # noqa: F405
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
+}
+
 # --- Loglama ---
 LOGGING = {
     "version": 1,
